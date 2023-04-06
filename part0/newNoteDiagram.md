@@ -1,5 +1,8 @@
 Title Excercise 0.4 - New Note
 
+```mermaid
+sequenceDiagram
+
         participant Browser
         participant Server
 
@@ -33,5 +36,6 @@ Title Excercise 0.4 - New Note
 
     Note over Browser: The browser reloads the page.
     end
+```
 
 ![0.4](../assets/excercise0.4newnote.png)
