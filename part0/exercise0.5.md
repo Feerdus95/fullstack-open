@@ -1,4 +1,4 @@
-Title Excercise 0.6 - SPA w/ new note
+Title Exercise 0.5 - SPA
 
 ```mermaid
 sequenceDiagram
@@ -31,16 +31,7 @@ sequenceDiagram
         deactivate Server
 
     Note over Browser: The browser executes an event handler, then displays the rendered notes.
-
-        Browser->>Server:   HTTP-POST [{ "content": 'There are places I'll remember all my life...', "date": "2023-04-06" }, ... ]
-
-    Note over Browser: Browser JavaScript event handler stops to reload the page.
-
-        Server-->>Browser:  [{ "content": "When I was a young boy my father took me into the city", "date": "2023-04-06" }, ..., { "content": 'There are places I'll remember all my life...', "date": "2023-04-06" }]
-    
-    Note over Browser: The browser executes an event handler, then displays the rendered notes again.
-
     end
 ```
 
-![0.6](../assets/excercise0.6spanewnote.png)
+![0.5](../assets/exercise0.5spa.png)

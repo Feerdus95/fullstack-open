@@ -1,4 +1,4 @@
-Title Excercise 0.4 - New Note
+Title Exercise 0.4 - New Note
 
 ```mermaid
 sequenceDiagram
@@ -38,4 +38,4 @@ sequenceDiagram
     end
 ```
 
-![0.4](../assets/excercise0.4newnote.png)
+![0.4](../assets/exercise0.4newnote.png)
