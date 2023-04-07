@@ -25,9 +25,9 @@ sequenceDiagram
 
     Note over Browser: Browser executes JavaScript code, fetching the JSON from the server.
 
-        Browser->>Server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+        Browser->>Server:   GET https://studies.cs.helsinki.fi/exampleapp/data.json
         activate Server
-        Server-->>Browser: [{ "content": "When I was a young boy my father took me into the city", "date": "2023-04-06" }, ... ]
+        Server-->>Browser:  [{ "content": "When I was a young boy my father took me into the city", "date": "2023-04-06" }, ... ]
         deactivate Server
 
     Note over Browser: The browser executes an event handler, then displays the rendered notes.
