@@ -1,6 +1,6 @@
-import { Header } from "../components/Header";
-import { Content } from "../components/Content";
-import { Total } from "../components/Total";
+import { Header } from "./components/Header";
+import { Content } from "./components/Content";
+import { Total } from "./components/Total";
 
 /**
 * - Header component renders the name of the course.
@@ -37,7 +37,7 @@ const App = () => {
       <div>
         <Header course={ course.name } />
         <Content parts= { course.parts } />
-        <Total parts= { course.parts } />
+        <Total exercises= { course.parts.map(x => x['exercises']) } />
       </div>
   )
 }
