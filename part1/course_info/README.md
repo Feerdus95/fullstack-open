@@ -1,9 +1,8 @@
-# Course Info // Información de Curso
+# React + Vite
 
->   The point of this exercise is to refactor the initial code given, so that we make
-    use of 3 components to render the data, instead of having one and only block of
-    HTML code.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
->   La finalidad de este primer ejercicio es refactorizar el código inicial propuesto,
-    de forma tal en que se utilizen 3 componentes para renderizar los datos, en lugar 
-    de tener todo en un único bloque de código HTML.
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
