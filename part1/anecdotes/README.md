@@ -1,8 +1,12 @@
-# React + Vite
+# Anecdotes App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Made for the FullStack Open course / Hecho para el curso de FullStack Open.
 
-Currently, two official plugins are available:
+This is an Anecdotes App project, made with React + Vite. It allows the users to see random anecdotes and vote for them.
+Este proyecto es una aplicación de anécdotas desarrollada con React + Vite. Permite a los usuarios ver anécdotas aleatorias y votar por ellas.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Highlights / Características
+
+- Shows a random anecdote /Muestra una anécdota aleatoria.
+- Allows to vote for the anecdote shown / Permite votar por la anécdota mostrada.
+- Shows the anecdote with the most votes / Muestra la anécdota con más votos.
