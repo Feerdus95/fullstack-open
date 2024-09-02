@@ -1,7 +1,8 @@
 import axios from 'axios'
 // const baseUrl = 'http://localhost:3001/persons'
 //const baseUrl = 'http://localhost:3001/api/persons'
-const baseUrl = '/api/persons'
+// const baseUrl = '/api/persons'
+const baseUrl = 'https://fs-open-p3-10-11.onrender.com/api/persons'
 
 const getAll = () => {
     const request = axios.get(baseUrl)
