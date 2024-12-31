@@ -4,13 +4,35 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+let token
+let user
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-  await Blog.insertMany(helper.initialBlogs)
+  await User.deleteMany({})
+
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  user = new User({ username: 'root', passwordHash })
+  await user.save()
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+  token = jwt.sign(userForToken, process.env.SECRET)
+
+  const blogsToInsert = helper.initialBlogs.map(blog => ({
+    ...blog,
+    user: user._id
+  }))
+
+  await Blog.insertMany(blogsToInsert)
 })
 
-// Exercise 4.8
 describe('when there are initially some blogs saved', () => {
   test('blogs are returned as json', async () => {
     await api
@@ -25,7 +47,6 @@ describe('when there are initially some blogs saved', () => {
   })
 })
 
-// Exercise 4.9
 describe('viewing a specific blog', () => {
   test('unique identifier property is named id', async () => {
     const response = await api.get('/api/blogs')
@@ -33,7 +54,6 @@ describe('viewing a specific blog', () => {
   })
 })
 
-// Exercise 4.10
 describe('addition of a new blog', () => {
   test('a valid blog can be added', async () => {
     const newBlog = {
@@ -45,19 +65,17 @@ describe('addition of a new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
-
-    const titles = blogsAtEnd.map(b => b.title)
-    expect(titles).toContain('Test Blog')
+    expect(blogsAtEnd.map(b => b.title)).toContain('Test Blog')
   })
 })
 
-// Exercise 4.11
 describe('blog likes property', () => {
   test('if likes property is missing, it defaults to 0', async () => {
     const newBlog = {
@@ -68,15 +86,14 @@ describe('blog likes property', () => {
 
     const response = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
-      .expect('Content-Type', /application\/json/)
 
     expect(response.body.likes).toBe(0)
   })
 })
 
-// Exercise 4.12
 describe('blog creation validation', () => {
   test('blog without title is not added', async () => {
     const newBlog = {
@@ -86,6 +103,7 @@ describe('blog creation validation', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -101,6 +119,7 @@ describe('blog creation validation', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400)
 
@@ -109,7 +128,6 @@ describe('blog creation validation', () => {
   })
 })
 
-// Exercise 4.13
 describe('deletion of a blog', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const blogsAtStart = await helper.blogsInDb()
@@ -117,17 +135,15 @@ describe('deletion of a blog', () => {
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
     expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
-
-    const titles = blogsAtEnd.map(b => b.title)
-    expect(titles).not.toContain(blogToDelete.title)
+    expect(blogsAtEnd.map(b => b.title)).not.toContain(blogToDelete.title)
   })
 })
 
-// Exercise 4.14
 describe('updating a blog', () => {
   test('succeeds with valid data', async () => {
     const blogsAtStart = await helper.blogsInDb()
