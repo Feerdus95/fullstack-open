@@ -1,5 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const { tokenExtractor, userExtractor } = require('../utils/middleware')
 
 blogsRouter.get('/', async (request, response) => {
@@ -26,10 +27,15 @@ blogsRouter.post('/', tokenExtractor, userExtractor, async (request, response) =
   }
 
   const savedBlog = await blog.save()
-  user.blogs = user.blogs.concat(savedBlog._id)
-  await user.save()
+  
+  await User.findByIdAndUpdate(
+    user._id,
+    { $push: { blogs: savedBlog._id } },
+    { new: true, runValidators: true }
+  )
 
-  response.status(201).json(savedBlog)
+  const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { username: 1, name: 1 })
+  response.status(201).json(populatedBlog)
 })
 
 blogsRouter.delete('/:id', tokenExtractor, userExtractor, async (request, response) => {
@@ -49,18 +55,11 @@ blogsRouter.delete('/:id', tokenExtractor, userExtractor, async (request, respon
 blogsRouter.put('/:id', async (request, response) => {
   const { title, author, url, likes } = request.body
 
-  const blog = {
-    title,
-    author,
-    url,
-    likes
-  }
-
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
-    blog,
+    { title, author, url, likes },
     { new: true, runValidators: true, context: 'query' }
-  )
+  ).populate('user', { username: 1, name: 1 })
 
   if (updatedBlog) {
     response.json(updatedBlog)

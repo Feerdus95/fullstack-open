@@ -86,6 +86,7 @@ const App = () => {
               type="text"
               value={username}
               name="Username"
+              data-testid="username"
               onChange={({ target }) => setUsername(target.value)}
             />
           </div>
@@ -95,6 +96,7 @@ const App = () => {
               type="password"
               value={password}
               name="Password"
+              data-testid="password"
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
@@ -113,6 +115,35 @@ const App = () => {
     }
   }
 
+  const handleLike = async (blog) => {
+    const updatedBlog = {
+      ...blog,
+      likes: blog.likes + 1,
+      user: blog.user.id
+    }
+
+    try {
+      const returnedBlog = await blogService.update(blog.id, updatedBlog)
+      setBlogs(blogs.map(b => b.id === blog.id ? returnedBlog : b))
+      return returnedBlog
+    } catch (exception) {
+      showNotification('Error updating likes', 'error')
+      return null
+    }
+  }
+
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogService.remove(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+        showNotification(`Blog ${blog.title} was successfully deleted`)
+      } catch (exception) {
+        showNotification('Error removing blog', 'error')
+      }
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -128,6 +159,8 @@ const App = () => {
           key={blog.id}
           blog={blog}
           user={user}
+          handleLike={() => handleLike(blog)}
+          handleRemove={() => handleRemove(blog)}
         />
       )}
     </div>
