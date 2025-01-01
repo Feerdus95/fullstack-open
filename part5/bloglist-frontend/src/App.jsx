@@ -4,6 +4,7 @@ import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,6 +13,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
   const [notificationType, setNotificationType] = useState('success')
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -38,7 +40,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password,
@@ -102,17 +104,31 @@ const App = () => {
     )
   }
 
+  const updateBlog = async (id, blogObject) => {
+    try {
+      const updatedBlog = await blogService.update(id, blogObject)
+      setBlogs(blogs.map(blog => blog.id === id ? updatedBlog : blog))
+    } catch (exception) {
+      showNotification('Error updating blog', 'error')
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
       <Notification message={notification} type={notificationType} />
-      <p>
-        {user.name} logged in
-        <button onClick={handleLogout}>logout</button>
-      </p>
-      <BlogForm createBlog={addBlog} />
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+      <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+
+      <Togglable buttonLabel="create new blog">
+        <BlogForm createBlog={addBlog} />
+      </Togglable>
+
+      {sortedBlogs.map(blog =>
+        <Blog
+          key={blog.id}
+          blog={blog}
+          user={user}
+        />
       )}
     </div>
   )
