@@ -1,8 +1,9 @@
-import { useSelector } from 'react-redux'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
-const Notification = () => {
-  const notification = useSelector(state => state.notification)
-  
+// Named component
+const NotificationComponent = (props) => {
+  const notification = props.notification
   const style = {
     border: 'solid',
     padding: 10,
@@ -13,12 +14,27 @@ const Notification = () => {
   if (!notification) {
     return null
   }
-  
+
   return (
     <div style={style}>
       {notification}
     </div>
   )
 }
+
+NotificationComponent.propTypes = {
+  notification: PropTypes.string
+}
+
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification
+  }
+}
+
+// Connect the named component
+const Notification = connect(
+  mapStateToProps
+)(NotificationComponent)
 
 export default Notification
