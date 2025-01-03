@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 
 const Blog = ({ blog, user, handleLike, handleRemove }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
-  const [blogData, setBlogData] = useState(blog)
 
   const blogStyle = {
     paddingTop: 10,
@@ -18,30 +17,27 @@ const Blog = ({ blog, user, handleLike, handleRemove }) => {
   }
 
   const handleLikeClick = async () => {
-    const updatedBlog = await handleLike(blogData)
-    if (updatedBlog) {
-      setBlogData(updatedBlog)
-    }
+    await handleLike(blog)
   }
 
   return (
     <div style={blogStyle} className="blog">
       <div>
-        {blogData.title} {blogData.author}
+        {blog.title} {blog.author}
         <button onClick={toggleDetails}>
           {detailsVisible ? 'hide' : 'view'}
         </button>
       </div>
       {detailsVisible && (
         <div className="blog-details">
-          <div>{blogData.url}</div>
+          <div>{blog.url}</div>
           <div>
-            likes <span data-testid="likes-count">{blogData.likes}</span>
+            likes <span data-testid="likes-count">{blog.likes}</span>
             <button onClick={handleLikeClick}>like</button>
           </div>
-          <div>{blogData.user ? blogData.user.name : ''}</div>
-          {blogData.user && user && blogData.user.username === user.username && (
-            <button onClick={() => handleRemove(blogData)}>remove</button>
+          <div>{blog.user ? blog.user.name : ''}</div>
+          {blog.user && user && blog.user.username === user.username && (
+            <button onClick={() => handleRemove(blog)}>remove</button>
           )}
         </div>
       )}
