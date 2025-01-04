@@ -10,6 +10,29 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  try {
+    const { comment } = request.body
+    const blog = await Blog.findById(request.params.id)
+    
+    if (!blog) {
+      return response.status(404).json({ error: 'blog not found' })
+    }
+
+    blog.comments = blog.comments || []
+    blog.comments = blog.comments.concat(comment)
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      { ...blog.toObject(), comments: blog.comments },
+      { new: true, runValidators: true }
+    ).populate('user', { username: 1, name: 1 })
+
+    response.json(updatedBlog)
+  } catch (error) {
+    response.status(400).json({ error: error.message })
+  }
+})
+
 blogsRouter.post('/', tokenExtractor, userExtractor, async (request, response) => {
   const body = request.body
   const user = request.user

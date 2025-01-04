@@ -2,6 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { initializeUsers } from './usersReducer'
+import { notify } from './notificationReducer'
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -22,16 +23,27 @@ const blogSlice = createSlice({
     removeBlog(state, action) {
       const id = action.payload
       return state.filter(blog => blog.id !== id)
+    },
+    commentBlog(state, action) {
+      const { id, comment } = action.payload
+      const blog = state.find(b => b.id === id)
+      if (blog) {
+        blog.comments = blog.comments.concat(comment)
+      }
     }
   }
 })
 
-export const { setBlogs, appendBlog, updateBlog, removeBlog } = blogSlice.actions
+export const { setBlogs, appendBlog, updateBlog, removeBlog, commentBlog } = blogSlice.actions
 
 export const initializeBlogs = () => {
   return async dispatch => {
-    const blogs = await blogService.getAll()
-    dispatch(setBlogs(blogs))
+    try {
+      const blogs = await blogService.getAll()
+      dispatch(setBlogs(blogs))
+    } catch (error) {
+      console.error('Error fetching blogs:', error)
+    }
   }
 }
 
@@ -67,9 +79,27 @@ export const likeBlog = (blog) => {
 
 export const deleteBlog = (id) => {
   return async dispatch => {
-    await blogService.remove(id)
-    dispatch(removeBlog(id))
-    dispatch(initializeUsers())
+    try {
+      await blogService.remove(id)
+      dispatch(removeBlog(id))
+      dispatch(initializeUsers())
+    } catch (error) {
+      throw error
+    }
+  }
+}
+
+export const addComment = (id, comment) => {
+  return async dispatch => {
+    try {
+      const updatedBlog = await blogService.createComment(id, comment)
+      dispatch(updateBlog(updatedBlog))
+      dispatch(notify('Comment added successfully', 'success'))
+      return updatedBlog
+    } catch (error) {
+      dispatch(notify('Error adding comment', 'error'))
+      throw error
+    }
   }
 }
 

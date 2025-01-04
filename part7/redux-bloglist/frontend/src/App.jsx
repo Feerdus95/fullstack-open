@@ -11,6 +11,7 @@ import { initializeBlogs, createBlog, likeBlog, deleteBlog } from './reducers/bl
 import { initializeUsers } from './reducers/usersReducer'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import User from './components/User'
+import BlogView from './components/BlogView'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -26,8 +27,11 @@ const App = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(initializeUser())
-  }, [dispatch])
+    if (user) {
+      dispatch(initializeBlogs())
+      dispatch(initializeUsers())
+    }
+  }, [dispatch, user])
 
   const showNotification = (message, type = 'success') => {
     dispatch(notify(message, type))
@@ -56,10 +60,27 @@ const App = () => {
     const padding = {
       paddingRight: 5
     }
+
+    const navStyle = {
+      backgroundColor: 'lightgrey',
+      padding: 5,
+      marginBottom: 10,
+      display: 'flex',
+      alignItems: 'center'
+    }
+
     return (
-      <div>
-        <Link style={padding} to="/">blogs</Link>
-        <Link style={padding} to="/users">users</Link>
+      <div style={navStyle}>
+        <div>
+          <Link style={padding} to="/">blogs</Link>
+          <Link style={padding} to="/users">users</Link>
+        </div>
+        <div style={{ marginLeft: 'auto' }}>
+          {user.name} logged in
+          <button style={{ marginLeft: 5 }} onClick={handleLogout}>
+            logout
+          </button>
+        </div>
       </div>
     )
   }
@@ -132,11 +153,11 @@ const App = () => {
         <h2>blogs</h2>
         <Notification />
         <Menu />
-        <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
 
         <Routes>
           <Route path="/users/:id" element={<User />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/blogs/:id" element={<BlogView />} />
           <Route path="/" element={
             <div>
               <Togglable buttonLabel="create new blog">

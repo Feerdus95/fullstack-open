@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 const Blog = ({ blog, user, handleLike, handleRemove }) => {
   const [detailsVisible, setDetailsVisible] = useState(false)
@@ -23,7 +24,7 @@ const Blog = ({ blog, user, handleLike, handleRemove }) => {
   return (
     <div style={blogStyle} className="blog">
       <div>
-        {blog.title} {blog.author}
+        <Link to={`/blogs/${blog.id}`}>{blog.title} {blog.author}</Link>
         <button onClick={toggleDetails}>
           {detailsVisible ? 'hide' : 'view'}
         </button>
