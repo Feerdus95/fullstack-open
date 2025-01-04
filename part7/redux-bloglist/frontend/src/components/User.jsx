@@ -1,10 +1,11 @@
-import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
+import { Typography, List, ListItem, ListItemText, Paper, Box } from '@mui/material'
 
 const User = () => {
-  const id = useParams().id
+  const { id } = useParams()
   const user = useSelector(state =>
-    state.users.find(u => u.id === id)
+    state.users.find(user => user.id === id)
   )
 
   if (!user) {
@@ -12,17 +13,23 @@ const User = () => {
   }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map(blog =>
-          <li key={blog.id}>
-            {blog.title}
-          </li>
-        )}
-      </ul>
-    </div>
+    <Box>
+      <Typography variant="h5" gutterBottom>
+        {user.name}
+      </Typography>
+      <Typography variant="h6" gutterBottom>
+        Added blogs:
+      </Typography>
+      <Paper elevation={2}>
+        <List>
+          {user.blogs.map(blog => (
+            <ListItem key={blog.id}>
+              <ListItemText primary={blog.title} />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </Box>
   )
 }
 

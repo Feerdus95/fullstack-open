@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-catch */
+/*eslint-disable no-useless-catch*/
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { initializeUsers } from './usersReducer'
